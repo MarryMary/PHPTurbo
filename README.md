@@ -1,2 +1,2 @@
 # PHPTurbo
-The PHP Framework
+PHP開発を加速させるフレームワーク
