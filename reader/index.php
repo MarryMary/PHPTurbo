@@ -49,7 +49,7 @@ function Viewer($filename){
     if(strpos( $filename, "ControllerTransmission>>" ) === false) {
         echo $juicer->SurfaceMix($filename, $_GET)->Go();
     }else{
-        $value = str_replace('ControllerTransmission>>', '', $filename);
+        $filename = str_replace('ControllerTransmission>>', '', $filename);
         require dirname(__FILE__)."/../SystemFIle/Controller/".$filename.".php";
         $userController = new $filename;
         $template_result = $userController->Controller();
