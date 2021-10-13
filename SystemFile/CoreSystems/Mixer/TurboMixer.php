@@ -10,6 +10,21 @@ class TurboMixer
         return $this;
     }
 
+    public function ResourceMix($viewFile, $type){
+        if($type == "css"){
+            header('Content-Type: text/css;', 'charset=utf-8');
+            $this->template = file_get_contents(dirname(__FILE__)."/../../../Surface/View_Template/css/".$viewFile.".css");
+        }else if($type == "js"){
+            $this->template = file_get_contents(dirname(__FILE__)."/../../../Surface/View_Template/js/".$viewFile.".js");
+        }
+        return $this;
+    }
+
+    public function SpecialMix($viewFile){
+        $this->template = file_get_contents(dirname(__FILE__)."/../SpecialFile/".$viewFile.".html");
+        return $this;
+    }
+
     public function BindRequest($Param)
     {
         $filePath = "";

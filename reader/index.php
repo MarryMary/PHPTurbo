@@ -9,7 +9,7 @@ function path_info() {
     else if (isset($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'])) {
         $url = parse_url($SysData["AppURL"] . $_SERVER['REQUEST_URI']);
         if ($url === false) return false;
-        return '/' . ltrim(substr($url['path'], strlen(dirname($_SERVER['SCRIPT_NAME']))), '/');
+        return '/' . ltrim(substr($url['path'], strlen(dirname($_SERVER['SCRIPT_NAME'])) - 6), '/');
     }
     return false;
 }
@@ -36,7 +36,6 @@ function path_route(array $map, $method = null, $path = null) {
         call_user_func($item[2], $matches);
         return;
     }
-
     $statusMap = array('404' => 'Not Found', '405' => 'Method Not Allowed');
     header("HTTP/1.1 {$code} {$statusMap[$code]}");
     if (isset($codeMap[$code])) call_user_func($codeMap[$code], array($path));
@@ -44,18 +43,30 @@ function path_route(array $map, $method = null, $path = null) {
 }
 function Escape($value, $encoding = 'UTF-8') { echo htmlspecialchars($value, ENT_QUOTES, $encoding); }
 
-function Viewer($value, $encoding = 'UTF-8') {
+function Viewer($filename){
     require dirname(__FILE__)."/../SystemFile/CoreSystems/Mixer/TurboMixer.php";
     $juicer = new TurboMixer();
-    if(strpos( $value, "ControllerTransmission>>" ) === false) {
-        echo $juicer->SurfaceMix($value, $_GET)->Go();
+    if(strpos( $filename, "ControllerTransmission>>" ) === false) {
+        echo $juicer->SurfaceMix($filename, $_GET)->Go();
     }else{
-        $value = str_replace('ControllerTransmission>>', '', $value);
-        require dirname(__FILE__)."/../SystemFIle/Controller/".$value.".php";
-        $userController = new $value;
+        $value = str_replace('ControllerTransmission>>', '', $filename);
+        require dirname(__FILE__)."/../SystemFIle/Controller/".$filename.".php";
+        $userController = new $filename;
         $template_result = $userController->Controller();
         echo $template_result;
     }
+}
+
+function SpecialFile($filename){
+    require dirname(__FILE__)."/../SystemFile/CoreSystems/Mixer/TurboMixer.php";
+    $juicer = new TurboMixer();
+    echo $juicer->SpecialMix($filename)->Go();
+}
+
+function ResourceFile($filename, $type="css"){
+    require dirname(__FILE__)."/../SystemFile/CoreSystems/Mixer/TurboMixer.php";
+    $juicer = new TurboMixer();
+    echo $juicer->ResourceMix($filename, $type)->Go();
 }
 
 require dirname(__FILE__)."/../SystemFile/routing.php";
