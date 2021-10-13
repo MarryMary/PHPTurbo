@@ -2,9 +2,18 @@
 
 class {CONTROLLERNAME}
 {
-    function Controller(){
-        require dirname(__FILE__)."/../CoreSystems/Mixer/TurboMixer.php";
+    private $para;
+    public function Controller(){
         $juicer =  new TurboMixer;
         //TODO
+    }
+
+    public function paramSetter($param = False){
+        if(!$param){
+            //TODO
+        }else{
+            $this->para = $param;
+        }
+        return $this;
     }
 }

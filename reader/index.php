@@ -1,4 +1,9 @@
 <?php
+/*
+* PHPTurbo Framework System Routing Core Technology
+* System Version 0.0.1 Beta
+* Reference：https://knooto.info/php-simple-routing/
+*/
 function path_info() {
     $DataSource = file_get_contents(dirname(__FILE__)."/../SystemFile/Settings/SysEnv.json");
     $DataSource = mb_convert_encoding($DataSource, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
@@ -43,16 +48,16 @@ function path_route(array $map, $method = null, $path = null) {
 }
 function Escape($value, $encoding = 'UTF-8') { echo htmlspecialchars($value, ENT_QUOTES, $encoding); }
 
-function Viewer($filename){
+function Viewer($filename, $param = array()){
     require dirname(__FILE__)."/../SystemFile/CoreSystems/Mixer/TurboMixer.php";
     $juicer = new TurboMixer();
     if(strpos( $filename, "ControllerTransmission>>" ) === false) {
-        echo $juicer->SurfaceMix($filename, $_GET)->Go();
+        echo $juicer->SurfaceMix($filename, $param)->Go();
     }else{
         $filename = str_replace('ControllerTransmission>>', '', $filename);
         require dirname(__FILE__)."/../SystemFIle/Controller/".$filename.".php";
         $userController = new $filename;
-        $template_result = $userController->Controller();
+        $template_result = $userController->paramSetter($param)->Controller();
         echo $template_result;
     }
 }

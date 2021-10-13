@@ -1,11 +1,12 @@
 <?php
 function RouteGetter(){
-    $RouteSet = array(
+    $RouteSet = [
         // ここにルーティングを記述してください。
-        array('*', '/', function(){ Viewer('congratulation'); }),
-        array('*', '/css/systemstyle/', function(){ ResourceFile('systemstyle', "css"); }),
-        array('*', '/contexam/', function(){ Viewer('ControllerTransmission>>PHPTurboController'); }),
-        array('*', '404', function(){ SpecialFile('FtF'); })
-    );
+        ['*', '/', function(){ Viewer('congratulation'); }],
+        ['*', '/contexam/', function($params){ Viewer('ControllerTransmission>>PHPTurboController', $params); }],
+        //ここから下の変更は推奨しません。
+        ['*', '/css/systemstyle/', function(){ ResourceFile('systemstyle', "css"); }],
+        ['*', '404', function(){ SpecialFile('FtF'); }]
+    ];
     return $RouteSet;
 }
