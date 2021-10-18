@@ -1,6 +1,6 @@
 <?php
 /*
-* PHPTurbo Framework System Routing Core Technology
+* PHPTurbo Framework System RouteNaviStation
 * System Version 0.0.1 Beta
 * Reference：https://knooto.info/php-simple-routing/
 */
@@ -48,7 +48,7 @@ function path_route(array $map, $method = null, $path = null) {
 }
 function Escape($value, $encoding = 'UTF-8') { echo htmlspecialchars($value, ENT_QUOTES, $encoding); }
 
-function Viewer($filename, $param = array()){
+function Viewer($filename, $param = ""){
     require dirname(__FILE__)."/../SystemFile/CoreSystems/Mixer/TurboMixer.php";
     $juicer = new TurboMixer();
     if(strpos( $filename, "ControllerTransmission>>" ) === false) {

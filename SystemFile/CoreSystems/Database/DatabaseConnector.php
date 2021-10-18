@@ -28,7 +28,6 @@ class DatabaseConnector
         $this->dbuser = Null;
         $this->dbpass = Null;
         $this->DBInstance = Null;
-        $this->configDir = "../../Settings/";
         $this->LogDir = "../../Logs/";
         $this->ExceptionProcessor = "../ErrProcessor/ErrorProcessor.php";
         $this->SysData = Null;
@@ -45,12 +44,10 @@ class DatabaseConnector
         $this->executed = False;
         $this->statement = Null;
 
-        $DataSource = file_get_contents(dirname(__FILE__)."/".$this->configDir."SysEnv.json");
-        $DataSource = mb_convert_encoding($DataSource, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
-        $this->SysData = json_decode($DataSource,true);
-        $lang = file_get_contents(dirname(__FILE__)."/".$this->configDir.$this->SysData['LangPack']);
-        $lang = mb_convert_encoding($lang, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
-        $this->langPack = json_decode($lang, true);
+        require_once dirname(__FILE__)."/../SystemFileReader/SysFileLoader.php";
+        $loader = new SystemFileReader();
+        $this->SysData = $loader->SettingLoader();
+        $this->LangPack = $loader->LangPackLoader();
         try {
             $this->dbh = "{$this->SysData['Database']}:dbname={$this->SysData['DatabaseName']};host={$this->SysData['DatabaseHost']};charset={$this->SysData['DatabaseCharSet']};port={$this->SysData['DatabasePort']}";
             $this->dbuser = $this->SysData['DatabaseUser'];
@@ -294,11 +291,11 @@ class DatabaseConnector
                             if (!$this->isSubQuery) {
                                 $this->QueryCommand .= " WHERE {$terms1} {$mode} ?";
                                 $this->now = "WHERE";
-                                $this->whereTerms += $terms2;
+                                array_push($this->whereTerms, $terms2);
                             } else {
                                 $this->subQueryCommand .= " WHERE {$terms1} {$mode} ?";
                                 $this->now = "WHERE";
-                                $this->whereTerms += $terms2;
+                                array_push($this->whereTerms, $terms2);
                             }
                             return $this;
                         } else {
@@ -400,11 +397,11 @@ class DatabaseConnector
                     if (!$this->isSubQuery) {
                         $this->QueryCommand .= " AND {$terms1} {$mode} ?";
                         $this->now = "AND";
-                        $this->whereTerms += $terms2;
+                        array_push($this->whereTerms, $terms2);
                     } else {
                         $this->subQueryCommand .= " AND {$terms1} {$mode} ?";
                         $this->now = "AND";
-                        $this->whereTerms += $terms2;
+                        array_push($this->whereTerms, $terms2);
                     }
                     return $this;
                 } else {
@@ -455,7 +452,7 @@ class DatabaseConnector
         }
     }
 
-    public function fetch($fetchmode="both")
+    public function MFetch($fetchmode="both")
     {
         require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
@@ -471,8 +468,7 @@ class DatabaseConnector
                 }else if($fetchmode == "column"){
                     $fetchM = PDO::FETCH_COLUMN;
                 }
-                $this->statement->fetch($fetchM);
-                return $this;
+                return $this->statement->fetch($fetchM);
             }else{
                 $CreateException->EchoError($this->SysData, $this->langPack, "WrongFetchMode", dirname(__FILE__)."/".$this->LogDir);
                 return False;
@@ -483,7 +479,7 @@ class DatabaseConnector
         }
     }
 
-    public function fetchAll($fetchmode="both")
+    public function MFetchAll($fetchmode="both")
     {
         require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
@@ -516,7 +512,7 @@ class DatabaseConnector
         $CreateException = new ErrorProcessor();
         if(!$this->isSubQuery) {
             if(empty($this->prepared)) {
-                $this->statement = $this->DBInstance->prepare($this);
+                $this->statement = $this->DBInstance->prepare($this->QueryCommand);
                 $mode = Null;
                 foreach ($this->whereTerms as $key => $value) {
                     if (is_numeric($value)) {
@@ -526,7 +522,7 @@ class DatabaseConnector
                     } else {
                         $mode = PDO::PARAM_STR;
                     }
-                    $this->statement->bindValue($key, htmlspecialchars($value), $mode);
+                    $this->statement->bindValue($key + 1, htmlspecialchars($value), $mode);
                 }
                 try {
                     $this->statement->execute();

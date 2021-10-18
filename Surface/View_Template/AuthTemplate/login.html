@@ -16,17 +16,26 @@
         <div class="mx-auto" style="width: 60%; height: 20%; box-shadow: 2px 2px 4px gray; padding: 10px; margin: 15%;">
             <div style="text-align: center;">
                 <h1>Lemonade Authorize CoreSystem</h1>
+                @if(!isset($err)):
                 <p>続行するにはログインしてください。</p>
+                @@else:
+                <p style="color: red;">入力内容に1つまたは複数のエラーがあります。</p>
+                <ul>
+                    @foreach($err as $error):
+                    <li>{{$error}}</li>
+                    @@@endforeach;
+                </ul>
+                @@@endif;
             </div>
             <hr class="titlebar">
-            <form>
+            <form action="/auth/auth" method="POST">
                 <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">メールアドレス：</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                  <label for="email" class="form-label">メールアドレス：</label>
+                  <input type="email" class="form-control" id="email" name="email">
                 </div>
                 <div class="mb-3">
-                  <label for="exampleInputPassword1" class="form-label">パスワード：</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1">
+                  <label for="password" class="form-label">パスワード：</label>
+                  <input type="password" class="form-control" id="password" name="password">
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary" style="width: 90%;">ログイン</button>

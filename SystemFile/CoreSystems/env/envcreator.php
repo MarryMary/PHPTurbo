@@ -9,7 +9,9 @@ class EnvCreator
     private $dbc;
 
     public function EnvInitializer(){
-        $this->config = json_decode(mb_convert_encoding(file_get_contents(dirname(__FILE__)."/".$this->config_json), 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN'),true);
+        require_once dirname(__FILE__)."/../SystemFileReader/SysFileLoader.php";
+        $loader = new SystemFileReader();
+        $this->config = $loader->SettingLoader();
         $this->initialized = True;
         return $this;
     }
@@ -31,7 +33,7 @@ class EnvCreator
 
     protected function DBCreator()
     {
-        require_once dirname(__FILE__)."/"."../Database/DatabaseConnector.php";
+        require_once dirname(__FILE__)."/../Database/DatabaseConnector.php";
         $dbc = new DatabaseConnector();
         $dbc->Initializer()->Self("CREATE DATABASE IF NOT EXISTS {$this->config["DatabaseName"]}")->Run();
         return $this;
@@ -45,7 +47,7 @@ class EnvCreator
             $this->dbc->Initializer()->Self("DROP TABLE IF EXISTS user")->Run();
         }
         $this->dbc->Initializer()->Self("CREATE TABLE IF NOT EXISTS preuser(email VARCHAR(256) NOT NULL, token VARCHAR(40) NOT NULL PRIMARY KEY)")->Run();
-        $this->dbc->Initializer()->Self("CREATE TABLE IF NOT EXISTS user(id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, email VARCHAR(256) NOT NULL, username VARCHAR(256) NOT NULL, profilepict VARCHAR(500) NOT NULL)")->Run();
+        $this->dbc->Initializer()->Self("CREATE TABLE IF NOT EXISTS user(id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, email VARCHAR(256) NOT NULL, username VARCHAR(256) NOT NULL, password VARCHAR(500) NOT NULL,profilepict VARCHAR(500) NOT NULL)")->Run();
         return $this;
     }
 

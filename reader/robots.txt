@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /phpturbo/
+Disallow: /css/
+Disallow: /js/
+Disallow: /mailer/
+Disallow: /delete/
+Disallow: /register/
+Disallow: /auth/
