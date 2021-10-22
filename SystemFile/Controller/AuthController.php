@@ -9,7 +9,14 @@ class AuthController
         $authorizer = new CoreSystemAccessor();
         if($this->para == "login"){
             if($authorizer->Auth()->IsAuthorized()){
-                //TODO
+                if(isset($_SESSION["sendTo"])){
+                    header("Location: ".$_SESSION["sendTo"]);
+                }else{
+                    require_once dirname(__FILE__)."/../CoreSystems/SystemFileReader/SysFileLoader.php";
+                    $loader = new SystemFileReader();
+                    $settings = $loader->SettingLoader();
+                    header("Location: ".$settings["loggedInAccess"]);
+                }
             }else{
                 return $juicer->SurfaceMix("AuthTemplate/login", array())->Go();
             }
@@ -22,7 +29,10 @@ class AuthController
                     return $juicer->SurfaceMix("AuthTemplate/login", array())->Go();
                 }
             }else{
-                return $juicer->SurfaceMix("AuthTemplate/login", array())->Go();
+                require_once dirname(__FILE__)."/../CoreSystems/SystemFileReader/SysFileLoader.php";
+                $loader = new SystemFileReader();
+                $settings = $loader->SettingLoader();
+                header("Location: /auth/login");
             }
         }
     }

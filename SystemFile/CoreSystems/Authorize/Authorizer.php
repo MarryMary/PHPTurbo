@@ -28,7 +28,7 @@ class Authorizer
     public function UserGet($id){
         require_once dirname(__FILE__)."/../Database/DatabaseConnector.php";
         $authorizer = new DatabaseConnector();
-        $user = $authorizer->Initializer()->Select("*", "user")->Where("id", $id, "eq")->Run()->fetch();
+        $user = $authorizer->Initializer()->Select("*", "user")->Where("id", $id, "eq")->Run()->MFetch();
         return $user;
     }
 }

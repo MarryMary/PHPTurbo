@@ -6,19 +6,13 @@ class TurboMixer
     private $prepared = Null;
     public function SurfaceMix($viewFile, $RequestParam)
     {
-        $MagicKey = "e79a86e38195e38293e381afe381a9e3828ce3818fe38289e38184e381aee69982e99693e382aae3838ae3838be383bce38197e381a6e381bee38199e3818befbc9f";
-        if($viewFile == $MagicKey){
-            $this->template = file_get_contents(dirname(__FILE__)."/../SpecialFile/GameTurbo.html");
-            return $this;
-        }else {
-            $this->template = file_get_contents(dirname(__FILE__) . "/../../../Surface/View_Template/" . $viewFile . ".html");
-            if (is_array($RequestParam)) {
-                require_once "PHPVtec.php";
-                $TemplateEngine = new PHPVtec();
-                $this->template = $TemplateEngine->VTECTemplateEngine($this->template, $RequestParam);
-            } else {
-                //TODO
-            }
+        $this->template = file_get_contents(dirname(__FILE__) . "/../../../Surface/View_Template/" . $viewFile . ".gregorio.html");
+        if (is_array($RequestParam)) {
+            require_once "GregorioTemplateEngine.php";
+            $TemplateEngine = new GregorioTemplateEngine();
+            $this->template = $TemplateEngine->VTECTemplateEngine($this->template, $RequestParam);
+        } else {
+            //TODO
         }
         return $this;
     }
@@ -45,7 +39,7 @@ class TurboMixer
     }
 
     public function SpecialMix($viewFile){
-        $this->template = file_get_contents(dirname(__FILE__)."/../SpecialFile/".$viewFile.".html");
+        $this->template = file_get_contents(dirname(__FILE__)."/../SpecialFile/".$viewFile.".gregorio.html");
         return $this;
     }
 

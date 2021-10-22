@@ -1,6 +1,6 @@
 <?php 
 declare(strict_types=1);
-class UuidV4Factory
+class UUIDCreator
 {
     const PATTERN = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
 
