@@ -10,7 +10,7 @@ class TurboMixer
         if (is_array($RequestParam)) {
             require_once "GregorioTemplateEngine.php";
             $TemplateEngine = new GregorioTemplateEngine();
-            $this->template = $TemplateEngine->VTECTemplateEngine($this->template, $RequestParam);
+            $this->template = $TemplateEngine->GregorioCore($this->template, $RequestParam);
         } else {
             //TODO
         }

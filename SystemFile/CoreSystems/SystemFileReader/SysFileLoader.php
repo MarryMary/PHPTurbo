@@ -27,7 +27,7 @@ class SystemFileReader{
 
     public function GetUUID(){
         require dirname(__FILE__)."/../env/UniqueIDProcessor.php";
-        $uuidprocessor = new UuidV4Factory();
+        $uuidprocessor = new UUIDCreator();
         return $uuidprocessor -> generate();
     }
 }

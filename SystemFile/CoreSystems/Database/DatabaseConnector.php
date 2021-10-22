@@ -146,6 +146,17 @@ class DatabaseConnector
         }
     }
 
+    public function CountRow(){
+        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
+        $CreateException = new ErrorProcessor();
+        if($this->executed){
+            return $this->statement->rowCount();
+        }else{
+            $CreateException->EchoError($this->SysData, $this->langPack, "ColTableMustBeSet", dirname(__FILE__)."/".$this->LogDir);
+            return False;
+        }
+    }
+
     public function Insert($table, $mode, $column, $value=Null)
     {
         if($this->nextSubQuery){
@@ -170,7 +181,7 @@ class DatabaseConnector
                         } else if ($mode == "Associative") {
                             foreach ($column as $key => $valu) {
                                 $col .= "{$key},";
-                                $val .= "{$valu},";
+                                $val .= "'{$valu}',";
                             }
                         }
                         if(!$this->isSubQuery){

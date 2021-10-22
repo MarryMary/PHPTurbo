@@ -11,11 +11,11 @@ use PHPMailer\PHPMailer\Exception;
 
 class EmailSender
 {
-    public function MailSend($address, $title, $template){
-        require_once dirname(__FILE__)."/../CoreSystems/SystemFileReader/SysFileLoader.php";
+    public function MailSend($address, $title, $template, $param){
+        require_once dirname(__FILE__)."/../SystemFileReader/SysFileLoader.php";
         $loader = new SystemFileReader();
         $system = $loader->SettingLoader();
-        require_once 'vendor/autoload.php';
+        require_once dirname(__FILE__).'/../../../vendor/autoload.php';
         mb_language("japanese");
         mb_internal_encoding("UTF-8");
         $mail = new PHPMailer(true);
@@ -25,6 +25,10 @@ class EmailSender
 
         $mail->setLanguage('ja', 'vendor/phpmailer/phpmailer/language/');
 
+        require_once dirname(__FILE__)."/../Mixer/GregorioTemplateEngine.php";
+        $templateEngine = new GregorioTemplateEngine();
+        $template = $templateEngine->GregorioCore($template, $param);
+
         try {
             $mail->SMTPDebug = SMTP::DEBUG_SERVER;
             $mail->isSMTP();
@@ -33,7 +37,7 @@ class EmailSender
             $mail->Username   = $system["mailUser"];
             $mail->Password   = $system["mailPassword"];
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port       = $system["mailPort"];
+            $mail->Port       = intval($system["mailPort"]);
 
 
             $mail->setFrom($system["mailFrom"], mb_encode_mimeheader($system["mailName"]));

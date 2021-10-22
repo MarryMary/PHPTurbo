@@ -1,89 +1,52 @@
 <?php
 
-$dir = "SystemFile/CoreSystems/env/";
+$dir = "SystemFile/Model/";
 foreach($argv as $argument)
 {
-    if($argument == "table_make"){
-        while(true)
-        {
-            $i = 0;
-            if(!file_exists($dir."EngineerTable".$i.".php")) {
-                if(file_exists("template.php")) {
-                    $template = file_get_contents('template.php');
-                    file_put_contents($dir."EngineerTable".$i.".php", $template);
-                    echo $dir."EngineerTable".$i.".php　へテンプレートを作成しました。";
-                }else{
-                    echo "データベース作成コード用テンプレートファイルが見つかりません。";
-                }
-            }
-        }
-    }else if($argument == "table_create"){
-        $createFiles = glob($dir.'*.php');
-        foreach($createFiles as $files)
-        {
-            if($files != $dir."envcreator.php"){
+    if($argument == "Migration"){
+        require_once("SystemFile/CoreSystems/env/envcreator.php");
+        try{
+            $envcreator = new EnvCreator();
+            $envcreator->EnvInitializer()->Execution();
+            $createFiles = glob($dir.'*.php');
+            foreach($createFiles as $files)
+            {
                 require_once($files);
-                execution();
+                Execution();
             }
+            echo "Migration was successful.";
+        }catch(Exception $e){
+            echo "Migration was failed.error is this->".$e->getMessage();
         }
-    }else if($argument == "reset"){
-        $resetFiles = glob($dir.'*.php');
-        foreach ($resetFiles as $file)
-        {
-            if($file == $dir."envcreator.php"){
-                require_once($file);
-                $envremake = new EnvCreator();
-                $envremake->EnvInitializer()->Reset();
-            }else {
-                require_once($file);
-                RollBack();
-            }
-        }
-    }else if($argument == "SysRollback"){
-        require_once($dir."envcreator.php");
-        $envremake = new EnvCreator();
-        $envremake->EnvInitializer()->Reset();
-    }else if($argument == "SysClear"){
-        try {
-            require_once($dir . "envcreator.php");
-            $envremake = new EnvCreator();
-            $envremake->EnvInitializer()->Reset();
-            echo "システムクリアに成功しました。";
-        }catch (Exception $e){
-            echo "システムクリアに失敗しました。内容は次の通りです：{$e}";
-        }
-    }else if($argument == "Closed"){
-        $closeFiles = glob('./*');
-        echo "この操作を実行すると、カレントディレクトリの内容がすべて削除され、システムが設定した環境変数等を全てプロジェクト開始前まで戻します。。Closedコマンドを実行しますか？(y/n)";
-        $userSelect = trim(fgets(STDIN));
-        if(strtolower($userSelect) == "y" or strtolower($userSelect) == "yes"){
-            echo "最終確認です。本当に実行しますか？(y/n)";
-            if(strtolower($userSelect) == "y" or strtolower($userSelect) == "yes"){
-                foreach($closeFiles as $files){
-                    unlink($files);
-                }
-                echo "プロジェクトをクローズしました。";
-            }
-        }else{
-            exit();
-        }
+    }else if($argument == "CreateMigration"){
+        $template = file_get_contents("SystemFile/CoreSystems/templates/dbtemplate.txt");
+        require "SystemFile/CoreSystems/SystemFileReader/SysFileLoader.php";
+        $loader = new SystemFileReader();
+        $uuid = $loader->GetUUID();
+        file_put_contents("SystemFile/Model/".$uuid.".php", $template);
+        echo "Controller Created in SystemFile/Model/".$uuid.".php";
     }else if($argument == "createController"){
-        $template = file_get_contents("ControllerTemplate.txt");
+        $template = file_get_contents("SystemFile/CoreSystems/templates/ControllerTemplate.txt");
         echo "ControllerName?>>";
         $userInput = trim(fgets(STDIN));
         $template = str_replace("{CONTROLLERNAME}", $userInput, $template);
         file_put_contents("SystemFile/Controller/".$userInput.".php", $template);
         echo "Controller Created in SystemFile/Controller/".$userInput.".php";
-    }else if($argument == "StartUp"){
-        require_once($dir."envcreator.php");
-        $envcreator = new EnvCreator();
-        $envcreator->EnvInitializer()->Execution();
-        echo "テーブルの作成に成功しました。";
+    }else if($argument == "MagicServer"){
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            echo "\n StartUp Magic Server Listen->Port:80 DocumentRoot:reader/ \n";
+            exec("php -S localhost:80 -t reader/");
+        } else if(PHP_OS == "Linux" or PHP_OS == "NetBSD" or PHP_OS == "OpenBSD" or PHP_OS == "FreeBSD" or PHP_OS == "Darwin") {
+            echo "\n StartUp Magic Server Listen->Port:80 DocumentRoot:reader/ \n";
+            exec("sudo php -S localhost:80 -t reader/");
+        }
+    }else if($argument == "TODOCheck"){
+        echo "TODO Commentout examinating...";
+        echo "Please wait...";
+
     }else if($argument == "help"){
         if(file_exists("CommandHelp.txt")){
             echo file_get_contents("CommandHelp.txt");
         }
-    }else if($argument == "createController"){
-
     }
 }
