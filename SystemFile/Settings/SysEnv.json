@@ -4,7 +4,7 @@
   "SystemVersion": "0.0.1",
   "Mode": "TestOnly",
   "HostOS": "NT",
-  "AppURL": "http://localhost:8888",
+  "AppURL": "http://localhost",
   "LangPack": "JapanLangPackage.json",
   "Database": "mysql",
   "DatabaseHost": "127.0.0.1",
@@ -17,10 +17,12 @@
   "DatabaseShowError": "Yes",
   "ShowException": "Yes",
   "DefaultPict": "Surface/Resource/account/defaultpict.jpg",
-  "mailHost": "",
-  "mailUser": "",
-  "mailPassword": "",
-  "mailFrom": "",
-  "mailName": "",
-  "notAuthRedirect": "/auth/login"
+  "mailHost": "smtp.gmail.com",
+  "mailUser": "phpturbo.example@gmail.com",
+  "mailPassword": "phpturboexamplepassword",
+  "mailFrom": "phpturbo.example@gmail.com",
+  "mailName": "PHPTurboMailSendSystem",
+  "mailPort": "465",
+  "notAuthRedirect": "/auth/login",
+  "loggedInAccess": "/loggedin/"
 }
