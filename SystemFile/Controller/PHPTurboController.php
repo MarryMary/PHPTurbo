@@ -1,10 +1,11 @@
 <?php
+require dirname(__FILE__)."/../../vendor/autoload.php";
 
 class PHPTurboController
 {
     private $para;
     public function Controller(){
-        $juicer =  new TurboMixer;
+        $juicer =  new TurboCore\TurboMixer;
         return $juicer->SurfaceMix("ControllerExample", array())->Go();
     }
 

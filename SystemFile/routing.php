@@ -11,10 +11,8 @@ function RouteGetter(){
         ['*', '/css/:filename', function($param){ ResourceFile($param["filename"], "css"); }],
         ['*', '/js/:filename', function($param){ ResourceFile($param["filename"], "js"); }],
         ['*', '/pict/:filename', function($param){ ResourceFile($param["filename"], "pict"); }],
-        ['*', '/css/systemstyle/', function(){ ResourceFile('systemstyle', "css"); }],
         ['*', '/phpturbo/administrator/', function(){ Viewer('ControllerTransmission>>TurboGearController'); }],
         ['*', '/phpturbo/lemonadeguardian/', function(){ Viewer('ControllerTransmission>>LemonadeController'); }],
-        ['*', '/Exception/', function(){ SpecialFile('CruiserException'); }],
         ['*', '/mailer/:action', function($params){ Viewer('ControllerTransmission>>MailSendController', $params["action"]); }],
         ['*', '404', function(){ SpecialFile('FtF'); }]
     ];

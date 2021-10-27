@@ -1,4 +1,6 @@
 <?php
+namespace TurboCore;
+require dirname(__FILE__)."/../../../vendor/autoload.php";
 
 class TurboMixer
 {
@@ -6,9 +8,8 @@ class TurboMixer
     private $prepared = Null;
     public function SurfaceMix($viewFile, $RequestParam)
     {
-        $this->template = file_get_contents(dirname(__FILE__) . "/../../../Surface/View_Template/" . $viewFile . ".gregorio.html");
+        $this->template = file_get_contents(dirname(__FILE__) . "/../../../Surface/View_Template/" . $viewFile . ".html");
         if (is_array($RequestParam)) {
-            require_once "GregorioTemplateEngine.php";
             $TemplateEngine = new GregorioTemplateEngine();
             $this->template = $TemplateEngine->GregorioCore($this->template, $RequestParam);
         } else {
@@ -38,8 +39,12 @@ class TurboMixer
         return $this;
     }
 
-    public function SpecialMix($viewFile){
+    public function SpecialMix($viewFile, $param = array()){
         $this->template = file_get_contents(dirname(__FILE__)."/../SpecialFile/".$viewFile.".gregorio.html");
+        if(is_array($param)){
+            $TemplateEngine = new GregorioTemplateEngine();
+            $this->template = $TemplateEngine->GregorioCore($this->template, $param);
+        }
         return $this;
     }
 

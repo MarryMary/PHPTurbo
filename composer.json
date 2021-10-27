@@ -1,5 +1,18 @@
 {
     "require": {
-        "phpmailer/phpmailer": "^6.5"
+        "phpmailer/phpmailer": "^6.5",
+        "cboden/ratchet": "^0.4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "TurboCore\\": [
+                "SystemFile/CoreSystems/Authorize/",
+                "SystemFile/CoreSystems/Database/",
+                "SystemFile/CoreSystems/env/",
+                "SystemFile/CoreSystems/ErrProcessor/",
+                "SystemFile/CoreSystems/Mixer/",
+                "SystemFile/CoreSystems/SystemFileReader/"
+            ]
+        }
     }
 }

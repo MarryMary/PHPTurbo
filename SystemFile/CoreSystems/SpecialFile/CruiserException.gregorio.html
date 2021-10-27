@@ -20,13 +20,14 @@
         <h2>PHPTurboの巡航システム内で例外が発生しました。</h2>
         <p>内容は以下の通りです。</p>
         <hr>
-        <ul>
-        @if(isset($exceptions)):
-            @foreach($exceptions as $exception):
-                <li>{{$exception}}</li>
-            @@@endforeach;
+        @if(isset($err)):
+            <ul>
+                @foreach($err as $e):
+                    <li>{{$e}}</li>
+                @@@endforeach;
+            </ul>
         @else:
-            <p>PHP巡航システム外の補足できないエラーが発生しています。</p>
+            <p>PHPTurbo巡航システム外の補足できないエラーが発生しています。</p>
         @endif;
     </div>
 </div>

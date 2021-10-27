@@ -1,4 +1,6 @@
 <?php
+namespace TurboCore;
+require dirname(__FILE__)."/../../vendor/autoload.php";
 
 class CoreSystemAccessor{
 
@@ -19,6 +21,6 @@ class CoreSystemAccessor{
 
     public function UUIDCreator(){
         require_once dirname(__FILE__)."/../CoreSystems/env/UniqueIDProcessor.php";
-        return new UuidV4Factory();
+        return new UUIDCreator();
     }
 }

@@ -1,38 +1,58 @@
 <?php
-
+require dirname(__FILE__)."/../../vendor/autoload.php";
 class AuthController
 {
     private $para;
     public function Controller(){
-        $juicer =  new TurboMixer;
+        $juicer =  new TurboCore\TurboMixer;
         require_once "CoreSystemAccessor.php";
-        $authorizer = new CoreSystemAccessor();
+        $authorizer = new TurboCore\CoreSystemAccessor();
         if($this->para == "login"){
             if($authorizer->Auth()->IsAuthorized()){
                 if(isset($_SESSION["sendTo"])){
                     header("Location: ".$_SESSION["sendTo"]);
                 }else{
                     require_once dirname(__FILE__)."/../CoreSystems/SystemFileReader/SysFileLoader.php";
-                    $loader = new SystemFileReader();
+                    $loader = new TurboCore\SystemFileReader();
                     $settings = $loader->SettingLoader();
                     header("Location: ".$settings["loggedInAccess"]);
                 }
             }else{
-                return $juicer->SurfaceMix("AuthTemplate/login", array())->Go();
+                $err = array();
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_start();
+                }
+                if(isset($_SESSION["err"])){
+                    $err = ["err" => [$_SESSION["err"]]];
+                    unset($_SESSION["err"]);
+                }
+                return $juicer->SurfaceMix("AuthTemplate/login", $err)->Go();
             }
         }else if($this->para == "auth"){
             if(isset($_POST["email"]) && isset($_POST["password"])){
                 $result = $authorizer->Auth()->UserAuthorize($_POST["email"], $_POST["password"]);
-                if($result){
+                if($result === True){
                     return $juicer->SurfaceMix("ControllerExample", array())->Go();
                 }else{
-                    return $juicer->SurfaceMix("AuthTemplate/login", array())->Go();
+                    if (session_status() == PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    $_SESSION["err"] = $result;
+                    header("Location: /auth/login");
                 }
             }else{
-                require_once dirname(__FILE__)."/../CoreSystems/SystemFileReader/SysFileLoader.php";
-                $loader = new SystemFileReader();
-                $settings = $loader->SettingLoader();
                 header("Location: /auth/login");
+            }
+        }else if($this->para == "logout"){
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] || isset($_SESSION["user"])){
+                session_destroy();
+                require_once dirname(__FILE__)."/../CoreSystems/SystemFileReader/SysFileLoader.php";
+                $loader = new TurboCore\SystemFileReader();
+                $settings = $loader->SettingLoader();
+                header("Location: ".$settings["sendTo"]);
             }
         }
     }

@@ -1,6 +1,6 @@
 <?php
 /*
-* PHPTurbo Framework System RouteNaviStation
+* PHPTurbo Framework System RoutingStation
 * System Version 0.0.1 Beta
 * Reference：https://knooto.info/php-simple-routing/
 */
@@ -14,7 +14,7 @@ function path_info() {
     else if (isset($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME'])) {
         $url = parse_url($SysData["AppURL"] . $_SERVER['REQUEST_URI']);
         if ($url === false) return false;
-        return '/' . ltrim(substr($url['path'], strlen(dirname($_SERVER['SCRIPT_NAME'])) - 6), '/');
+        return '/' . ltrim(substr($url['path'], strlen(dirname($_SERVER['SCRIPT_NAME']))), '/');
     }
     return false;
 }
@@ -37,6 +37,12 @@ function path_route(array $map, $method = null, $path = null) {
         if (!preg_match($pattern, $path, $matches)) continue;
         if (!$sameMethod) {
             $code = '405'; continue;
+        }else if(strtoupper($item[0]) == $method && $method == "POST"){
+            if(!isset($_POST["csrfPosting"]) || !isset($_SESSION["csrfToken"]) || isset($_POST["csrfPosting"]) && isset($_SESSION["csrfToken"]) && $_POST["csrfPosting"] !== $_SESSION["csrfToken"]){
+                require_once dirname(__FILE__)."/../SystemFile/CoreSystems/ErrProcessor/ErrorProcessor.php";
+                $errors = new ErrorProcessor();
+                $errors->EchoError();
+            }
         }
         call_user_func($item[2], $matches);
         return;

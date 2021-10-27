@@ -1,4 +1,7 @@
 <?php
+namespace TurboCore;
+use Exception, PDO;
+require dirname(__FILE__)."/../../../vendor/autoload.php";
 
 class DatabaseConnector
 {
@@ -44,7 +47,6 @@ class DatabaseConnector
         $this->executed = False;
         $this->statement = Null;
 
-        require_once dirname(__FILE__)."/../SystemFileReader/SysFileLoader.php";
         $loader = new SystemFileReader();
         $this->SysData = $loader->SettingLoader();
         $this->LangPack = $loader->LangPackLoader();
@@ -60,7 +62,6 @@ class DatabaseConnector
             $this->Initialized = True;
             return $this;
         }catch(Exception $e){
-            require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
             $CreateException = new ErrorProcessor();
             $CreateException->EchoError($this->SysData, $this->langPack, "DBInitializerHint", dirname(__FILE__)."/".$this->LogDir, $e);
             return False;
@@ -69,7 +70,6 @@ class DatabaseConnector
 
     public function Self($query, $bindValue = Null)
     {
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if($this->Initialized){
             if(empty($this->QueryMode) and !$this->isSubQuery){
@@ -113,7 +113,6 @@ class DatabaseConnector
 
     public function Select($column, $table)
     {
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if($this->nextSubQuery){
             $this->nextSubQuery = False;
@@ -146,23 +145,11 @@ class DatabaseConnector
         }
     }
 
-    public function CountRow(){
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
-        $CreateException = new ErrorProcessor();
-        if($this->executed){
-            return $this->statement->rowCount();
-        }else{
-            $CreateException->EchoError($this->SysData, $this->langPack, "ColTableMustBeSet", dirname(__FILE__)."/".$this->LogDir);
-            return False;
-        }
-    }
-
     public function Insert($table, $mode, $column, $value=Null)
     {
         if($this->nextSubQuery){
             $this->nextSubQuery = False;
         }
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(empty($this->QueryMode) or $this->isSubQuery){
             $this->QueryMode = "INSERT";
@@ -181,7 +168,7 @@ class DatabaseConnector
                         } else if ($mode == "Associative") {
                             foreach ($column as $key => $valu) {
                                 $col .= "{$key},";
-                                $val .= "'{$valu}',";
+                                $val .= "{$valu},";
                             }
                         }
                         if(!$this->isSubQuery){
@@ -214,7 +201,6 @@ class DatabaseConnector
         if($this->nextSubQuery){
             $this->nextSubQuery = False;
         }
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(empty($this->QueryMode) or $this->isSubQuery){
             $this->QueryMode = "UPDATE";
@@ -263,7 +249,6 @@ class DatabaseConnector
         if($this->nextSubQuery){
             $this->nextSubQuery = False;
         }
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(empty($this->QueryMode) or $this->isSubQuery){
             $this->QueryMode = "DELETE";
@@ -286,7 +271,6 @@ class DatabaseConnector
 
     public function Where($terms1, $terms2, $type)
     {
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(!$this->nextSubQuery) {
             if(!empty($this->QueryMode)) {
@@ -333,7 +317,6 @@ class DatabaseConnector
 
     public function GroupBy($column)
     {
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(!$this->nextSubQuery){
             if(empty($this->now) or !empty($this->now) and $this->now != "GROUPBY"){
@@ -364,7 +347,6 @@ class DatabaseConnector
 
     public function OrderBy($column, $mode="DESC")
     {
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(!$this->nextSubQuery){
             if(empty($this->now) or !empty($this->now) and $this->now != "GROUPBY"){
@@ -394,7 +376,6 @@ class DatabaseConnector
     }
 
     public function AndQuery($terms1, $terms2, $type){
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(!$this->nextSubQuery){
             if (!empty($terms1) and is_string($terms1) and !empty($terms2) and is_string($terms2) and !empty($type) and is_string($type)) {
@@ -430,7 +411,6 @@ class DatabaseConnector
     }
 
     public function StartSubQuery(){
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(empty($this->now) or !empty($this->now) and $this->now != "STARTSUBQ"){
             $this->isSubQuery = True;
@@ -444,7 +424,6 @@ class DatabaseConnector
     }
 
     public function EndSubQuery(){
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(!empty($this->now) and $this->now != "ENDSUBQ"){
             if(!$this->nextSubQuery) {
@@ -465,7 +444,6 @@ class DatabaseConnector
 
     public function MFetch($fetchmode="both")
     {
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if($this->executed){
             if($fetchmode == "both" or $fetchmode == "assoc" or $fetchmode == "keypair" or $fetchmode == "column"){
@@ -492,7 +470,6 @@ class DatabaseConnector
 
     public function MFetchAll($fetchmode="both")
     {
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if($fetchmode == "both" or $fetchmode == "assoc" or $fetchmode == "keypair" or $fetchmode == "column"){
             $fetchM = Null;
@@ -519,7 +496,6 @@ class DatabaseConnector
 
     public function Run()
     {
-        require_once(dirname(__FILE__)."/".$this->ExceptionProcessor);
         $CreateException = new ErrorProcessor();
         if(!$this->isSubQuery) {
             if(empty($this->prepared)) {

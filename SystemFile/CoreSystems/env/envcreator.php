@@ -1,15 +1,12 @@
 <?php
-
-
+namespace TurboCore;
+require dirname(__FILE__)."/../../../vendor/autoload.php";
 class EnvCreator
 {
-    private $config_json = "../../Settings/SysEnv.json";
     private $config;
-    private $initialized = False;
     private $dbc;
 
     public function EnvInitializer(){
-        require_once dirname(__FILE__)."/../SystemFileReader/SysFileLoader.php";
         $loader = new SystemFileReader();
         $this->config = $loader->SettingLoader();
         $this->initialized = True;
@@ -33,7 +30,6 @@ class EnvCreator
 
     protected function DBCreator()
     {
-        require_once dirname(__FILE__)."/../Database/DatabaseConnector.php";
         $dbc = new DatabaseConnector();
         $dbc->Initializer()->Self("CREATE DATABASE IF NOT EXISTS {$this->config["DatabaseName"]}")->Run();
         return $this;
@@ -41,7 +37,6 @@ class EnvCreator
 
     protected function TableCreator()
     {
-        require_once dirname(__FILE__)."/"."../Database/DatabaseConnector.php";
         $this->dbc = new DatabaseConnector();
         if($this->config["DatabaseExistsForceCreate"] == "Yes"){
             $this->dbc->Initializer()->Self("DROP TABLE IF EXISTS user")->Run();

@@ -1,12 +1,11 @@
 <?php
+require 'vendor/autoload.php';
 
-$dir = "SystemFile/Model/";
 foreach($argv as $argument)
 {
     if($argument == "Migration"){
-        require_once("SystemFile/CoreSystems/env/envcreator.php");
         try{
-            $envcreator = new EnvCreator();
+            $envcreator = new TurboCore\EnvCreator();
             $envcreator->EnvInitializer()->Execution();
             $createFiles = glob($dir.'*.php');
             foreach($createFiles as $files)
@@ -20,8 +19,7 @@ foreach($argv as $argument)
         }
     }else if($argument == "CreateMigration"){
         $template = file_get_contents("SystemFile/CoreSystems/templates/dbtemplate.txt");
-        require "SystemFile/CoreSystems/SystemFileReader/SysFileLoader.php";
-        $loader = new SystemFileReader();
+        $loader = new TurboCore\SystemFileReader();
         $uuid = $loader->GetUUID();
         file_put_contents("SystemFile/Model/".$uuid.".php", $template);
         echo "Controller Created in SystemFile/Model/".$uuid.".php";
@@ -40,10 +38,6 @@ foreach($argv as $argument)
             echo "\n StartUp Magic Server Listen->Port:80 DocumentRoot:reader/ \n";
             exec("sudo php -S localhost:80 -t reader/");
         }
-    }else if($argument == "TODOCheck"){
-        echo "TODO Commentout examinating...";
-        echo "Please wait...";
-
     }else if($argument == "help"){
         if(file_exists("CommandHelp.txt")){
             echo file_get_contents("CommandHelp.txt");

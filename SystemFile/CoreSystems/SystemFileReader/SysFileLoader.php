@@ -1,4 +1,6 @@
 <?php
+namespace TurboCore;
+require dirname(__FILE__)."/../../../vendor/autoload.php";
 
 class SystemFileReader{
     private $setting;
@@ -26,7 +28,6 @@ class SystemFileReader{
     }
 
     public function GetUUID(){
-        require dirname(__FILE__)."/../env/UniqueIDProcessor.php";
         $uuidprocessor = new UUIDCreator();
         return $uuidprocessor -> generate();
     }

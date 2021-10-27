@@ -1,10 +1,14 @@
 <?php
-session_start();
+namespace TurboCore;
+require dirname(__FILE__)."/../../../vendor/autoload.php";
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 class Authorizer
 {
     public function UserAuthorize($usermail, $password)
     {
-        require_once dirname(__FILE__)."/../Database/DatabaseConnector.php";
         $authorizer = new DatabaseConnector();
         $user = $authorizer->Initializer()->Select(["*"], "user")->Where("email", $usermail, "eq")->Run();
         $result = $user->MFetch();
@@ -13,7 +17,7 @@ class Authorizer
             $_SESSION["user"] = $user["id"];
             return true;
         }else{
-            return false;
+            return "ユーザー名またはパスワードが違います。";
         }
     }
 
@@ -26,7 +30,6 @@ class Authorizer
     }
 
     public function UserGet($id){
-        require_once dirname(__FILE__)."/../Database/DatabaseConnector.php";
         $authorizer = new DatabaseConnector();
         $user = $authorizer->Initializer()->Select("*", "user")->Where("id", $id, "eq")->Run()->MFetch();
         return $user;

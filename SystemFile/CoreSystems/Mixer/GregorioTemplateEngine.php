@@ -5,6 +5,9 @@
  * 2021/10/15 Mary
  */
 
+namespace TurboCore;
+require dirname(__FILE__)."/../../../vendor/autoload.php";
+
 class GregorioTemplateEngine
 {
     private $codedump = False;
@@ -27,7 +30,6 @@ class GregorioTemplateEngine
             if(substr(ltrim($template), 0, 1) === '@'){
                 if(substr_count($template, "@") == 1){
                     if(strpos($template,'authonly') !== false){
-                        require_once dirname(__FILE__)."/../SystemFileReader/SysFileLoader.php";
                         $loader = new SystemFileReader();
                         $settings = $loader->SettingLoader();
                         $auth = new Authorizer();
@@ -38,15 +40,14 @@ class GregorioTemplateEngine
                             break;
                         }
                     }else if(strpos($template,'csrfGuard') !== false){
-                        require_once dirname(__FILE__)."/../env/UniqueIDProcessor.php";
                         $tokenCreator = new UUIDCreator();
                         if (session_status() == PHP_SESSION_NONE) {
                             session_start();
                         }
                         $_SESSION['csrfToken'] = str_replace('-', '', $tokenCreator->generate());
-                        $template = '<input type="hidden" name="token" value="'.$_SESSION['csrfToken'].'">';
+                        $template = '<input type="hidden" name="csrfPosting" value="'.$_SESSION['csrfToken'].'">';
                         if($this->codedump){
-                            $this->code .= "return '".$template.'";';
+                            $this->code .= "$this->prepared .= '".$template.'";';
                         }else{
                             $this->prepared .= $template;
                         }
@@ -63,8 +64,7 @@ class GregorioTemplateEngine
                     $this->codecount -= 1;
                     if($this->codecount == 0){
                         $this->code .= str_replace('@', '', ltrim($template));
-                        $result = eval($this->code);
-                        $this->prepared .= $result;
+                        eval($this->code);
                         $this->codedump = False;
                     }else{
                         $this->code .= str_replace('@', '', ltrim($template));
@@ -80,7 +80,7 @@ class GregorioTemplateEngine
                             $binder = str_replace('}}', '', $binder);
                             $template = str_replace($val, "'.".$binder.".'", $template);
                         }
-                        $this->code .= "return '".$template."';";
+                        $this->code .= '$this->prepared .= \''.$template.'\';';
                     }else{
                         $pattern = '/\{{.+?\}}/';
                         preg_match_all($pattern, $template, $variable);
@@ -89,10 +89,9 @@ class GregorioTemplateEngine
                             $binder = str_replace('}}', '', $binder);
                             $template = str_replace($val, '".'.$binder.'."', $template);
                         }
-                        $this->code .= 'return "'.$template.'";';
+                        $this->code .= '$this->prepared .= "'.$template.'";';
                     }
-                }
-                else{
+                }else{
                     if(strpos($template,'{{') !== false || strpos($template,'}}') !== false || strpos($template,'$') !== false){
                         $pattern = '/\{{.+?\}}/';
                         preg_match_all($pattern, $template, $variable);

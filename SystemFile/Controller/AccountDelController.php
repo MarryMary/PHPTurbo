@@ -1,11 +1,11 @@
 <?php
-
+require dirname(__FILE__)."/../../vendor/autoload.php";
 class AccountDelController
 {
     private $para;
     public function Controller(){
         require dirname(__FILE__)."/../CoreSystems/Mixer/TurboMixer.php";
-        $juicer =  new TurboMixer;
+        $juicer =  new TurboCore\TurboMixer;
         //TODO
     }
 

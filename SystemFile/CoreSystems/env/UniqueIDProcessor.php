@@ -1,5 +1,8 @@
 <?php 
 declare(strict_types=1);
+
+namespace TurboCore;
+require dirname(__FILE__)."/../../../vendor/autoload.php";
 class UUIDCreator
 {
     const PATTERN = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
