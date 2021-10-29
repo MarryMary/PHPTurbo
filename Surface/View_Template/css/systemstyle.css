@@ -1,0 +1,61 @@
+/*
+*    PHPTurboシステム使用済CSS
+*    削除しないで下さい。
+*/
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
+body {
+    font-family: 'Open Sans';
+}
+
+.MainTitle{
+    margin: 10px;
+    font-size: 35px;
+}
+
+.titlebar{
+    border: none;
+    height: 2px !important;
+    background: linear-gradient(90deg, rgba(132, 255, 0, 0.1) 0%, rgb(55, 255, 0) 50%, rgba(132, 255, 0, 0.1) 100%);
+}
+
+.dangerTitlebar{
+    border: none;
+    height: 2px !important;
+    background: linear-gradient(90deg, rgba(255,0,0,0.1) 0%,  rgba(255,0,0,1) 50%, rgba(255,0,0,0.1) 100%);
+}
+
+.HyperLink:hover{
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.nowPage{
+    line-height: 1.0em;
+    padding: 5px;
+    border-left: thick solid #edab7b;
+}
+
+.selector a{
+    text-decoration: none;
+    color: black;
+}
+
+.selector:hover{
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.centerAlign{
+    text-align: center;
+}
+
+.subTitle{
+    margin: 10px;
+    font-size: 25px;
+}
+
+.sideBar{
+    margin-left: 10px;
+    margin-top: 10px;
+}
